@@ -1,3 +1,4 @@
+# ref. [autoscaler/FAQ.md at master · kubernetes/autoscaler](https://github.com/kubernetes/autoscaler/blob/master/cluster-autoscaler/FAQ.md#how-can-i-configure-overprovisioning-with-cluster-autoscaler)
 apiVersion: skaffold/v2beta28
 kind: Config
 metadata:

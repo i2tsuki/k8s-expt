@@ -1,0 +1,5 @@
+package t
+
+func TestIsInWindow() {
+
+}

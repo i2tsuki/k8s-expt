@@ -1,0 +1,84 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  name: backlog-web
+spec:
+  replicas: 3
+  selector: null
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+    spec:
+      containers:
+      - env:
+        - name: SECRET_REGISTERING_CLIENT_SECRET
+          valueFrom:
+            secretKeyRef:
+              key: SECRET_REGISTERING_CLIENT_SECRET
+              name: backlog-web-credentials
+        - name: SECRET_REGISTERING_REGISTRY_SERVER_USER
+          valueFrom:
+            secretKeyRef:
+              key: SECRET_REGISTERING_REGISTRY_SERVER_USER
+              name: backlog-web-credentials
+        - name: SECRET_REGISTERING_REGISTRY_SERVER_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: SECRET_REGISTERING_REGISTRY_SERVER_PASSWORD
+              name: backlog-web-credentials
+        name: backlog-web
+        resources:
+          limits:
+            cpu: 800m
+            memory: 4Gi
+          requests:
+            cpu: 2m
+            memory: 4Gi
+        startupProbe:
+          exec:
+            command:
+            - /bin/python3.8
+            - /script/warm_up.py
+            - --space-key
+            - inspection
+            - --user-id
+            - "345"
+            - --threshold-sec
+            - "5"
+            - --parallelism
+            - "3"
+      - name: fluentd-audit-log
+        resources:
+          limits:
+            cpu: 100m
+            memory: 128Mi
+          requests:
+            cpu: 100m
+            memory: 128Mi
+      volumes:
+      - configMap:
+          items:
+          - key: backlog.conf
+            path: backlog.conf
+          - key: backlog_common.conf
+            path: backlog_common.conf
+          - key: backlog_dev.conf
+            path: backlog_dev.conf
+          - key: backlog_region_us_east_1.conf
+            path: backlog_region_us_east_1.conf
+          - key: backlog_domain_dev_backlog_com.conf
+            path: backlog_domain_dev_backlog_com.conf
+          - key: internal_client_hosts_dev.txt
+            path: internal_client_hosts_dev.txt
+          - key: logback.xml
+            path: logback.xml
+          - key: jmx_exporter.yaml
+            path: jmx_exporter.yaml
+          name: backlog-web-config
+        name: config
+status: {}
+: config
+status: {}
+}
